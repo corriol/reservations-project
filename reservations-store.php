@@ -2,7 +2,7 @@
 $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $pdo = new PDO("mysql:host=127.0.0.1; dbname=reservations", "user_db", "abcd");
+        $pdo = new PDO("mysql:host=mysql-server; dbname=reservations", "user_db", "abcd");
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -39,9 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
         }
     } catch (PDOException $PDOException) {
-        echo $PDOException->getMessage();
+        die($PDOException->getMessage());
     } catch (Exception $exception) {
-        echo $exception->getMessage();
+        die($exception->getMessage());
     }
 } else
     die("cannot access with GET Method");

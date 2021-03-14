@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 $errors = [];
 try {
-    $pdo = new PDO("mysql:host=127.0.0.1; dbname=reservations", "user_db", "abcd");
+    $pdo = new PDO("mysql:host=mysql-server; dbname=reservations", "user_db", "abcd");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $stmt = $pdo->query("SELECT * FROM court");

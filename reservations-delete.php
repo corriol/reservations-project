@@ -1,22 +1,26 @@
 <?php
+define("CONFIRMATION_BTN", "Yes");
 $errors = [];
 try {
+    $pdo = new PDO("mysql:host=mysql-server; dbname=reservations", "user_db", "abcd");
+    if($_SERVER['REQUEST_METHOD'] === 'GET') {
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+        if (empty($id)) {
+            $errors[] = "Invalid reservation";
+        } else {
 
-    $id = filter_input(INPUT_GET,'id',FILTER_VALIDATE_INT);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $pdo = new PDO("mysql:host=127.0.0.1; dbname=reservations","user_db","abcd");
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-    $stmt = $pdo->prepare("SELECT * FROM reservation WHERE id=:id");
-    $stmt->bindValue('id',$id,PDO::PARAM_INT);
-    $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    $stmt->execute();
-    $reserva = $stmt->fetch();
-
-
-    if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $stmt = $pdo->prepare("SELECT * FROM reservation WHERE id=:id");
+            $stmt->bindValue('id', $id, PDO::PARAM_INT);
+            $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            $stmt->execute();
+            $reserva = $stmt->fetch();
+        }
+    }
+    else {
         $answer = filter_input(INPUT_POST, 'user_answer');
-        if ($answer==="Sí") {
+        if ($answer===CONFIRMATION_BTN) {
             $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
 
 
@@ -34,9 +38,9 @@ try {
     }
 
 }catch (PDOException $PDOException){
-    echo $PDOException->getMessage();
+    die($PDOException->getMessage());
 }catch (Exception $exception){
-    echo $exception->getMessage();
+    die($exception->getMessage());
 }
 
 ?>
@@ -56,17 +60,21 @@ try {
         <?php foreach ($errors as $error): ?>
             <p><?= $error ?></p>
         <?php endforeach; ?>
-    <?php endif; ?>
-    <p>name:<?=$reserva["name"]?></p>
-    <p>data:<?=$reserva["date"]?></p>
+        <p>Go to <a href="reservations.php">reservations</a></p>
+    <?php else: ?>
+        <h2>Confirm delete</h2>
+        <p>This reservation will be delete. Are you sure?</p>
+        <p>name:<?=$reserva["name"]?></p>
+        <p>data:<?=$reserva["date"]?></p>
 
-    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
-        <input type="hidden" value="<?=$reserva["id"]?>" id="id" name="id">
-            <input name="user_answer" type="submit" value="Sí">
+        <form action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
+            <input type="hidden" value="<?=$reserva["id"]?>" id="id" name="id">
+            <input name="user_answer" type="submit" value="<?=CONFIRMATION_BTN?>">
             <input name="user_answer" type="submit" value="No">
-        </div>
-    </form>
+            </div>
+        </form>
 
+    <?php endif; ?>
 <?php else: ?>
     <p>Se ha borrado correctamente</p>
     <a href="../index.php">Volver</a>
