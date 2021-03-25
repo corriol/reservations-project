@@ -1,8 +1,25 @@
 <?php
 declare(strict_types=1);
+// it's a good practise to save the cookie name in a variable to avoid misspelling errors.
+$cookieName = "last_used_name";
 
+// we get the current cookie value
+$lastUsedName = filter_input(INPUT_COOKIE, $cookieName);
 
-$errors = [];
+// if empty (null or false, see filter_input for more details) we assign empty string to ensure
+// $lastUsedName is a string.
+if (empty($lastUsedName))
+    $lastUsedName = "";
+
+// start the session management
+session_start();
+
+// get the current values
+$errors = $_SESSION["errors"] ?? [];
+
+// unset values
+unset($_SESSION["errors"]);
+
 try {
     $pdo = new PDO("mysql:host=mysql-server; dbname=reservations", "user_db", "abcd");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -64,15 +81,19 @@ try {
 <h1>Reserve a court</h1>
 
 <?php if (!empty($errors)): ?>
-    <?php foreach ($errors as $error): ?>
-        <p><?= $error ?></p>
-    <?php endforeach; ?>
+    <h2>Error!</h2>
+    <p>There are some errors:</p>
+    <ul>
+        <?php foreach ($errors as $error): ?>
+            <li><?= $error ?></li>
+        <?php endforeach; ?>
+    </ul>
 <?php endif; ?>
 
 <form action="reservations-store.php" method="post">
     <div>
         <label for="name">Nombre:</label>
-        <input type="text" id="name" name="name">
+        <input type="text" id="name" name="name" value="<?= $lastUsedName ?>">
     </div>
     <div>
         <label for="date">Date:</label>
@@ -83,8 +104,8 @@ try {
 
         <?php foreach ($timeslots as $time): ?>
             <label for="ts-<?= $time["id"] ?>"><input type="radio" value="<?= $time["id"] ?>"
-                                                              id="ts-<?= $time["id"] ?>"
-                                                              name="timeslot_id"><?= $time["name"] ?>
+                                                      id="ts-<?= $time["id"] ?>"
+                                                      name="timeslot_id"><?= $time["name"] ?>
             </label>
         <?php endforeach; ?>
 
