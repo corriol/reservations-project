@@ -1,5 +1,7 @@
 <?php
 $errors = [];
+$cookieName = "last_used_name";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo = new PDO("mysql:host=mysql-server; dbname=reservations", "user_db", "abcd");
@@ -11,7 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($name)) {
             $errors[] = "The name is mandatory";
-        }
+        } else
+            // if not empty we register the current name and set the expiration date to the next month.
+            setcookie($cookieName, $name, time() + (30 * 24 * 60 * 60));
 
         // we get the date directly
         $dirtyDate = $_POST['date'];
@@ -37,11 +41,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindValue('court_id', $courtId, PDO::PARAM_INT);
             $stmt->bindValue('timeslot_id', $timeslotId, PDO::PARAM_INT);
             $stmt->execute();
+
+
+            session_start();
+            // we save the message
+            $_SESSION["message"] = "Your reservation has been saved successfully!";
+
+            // we redirect to index page
+            header('Location: /index.php');
+            exit();
+
+
+        } else {
+            session_start();
+            // we save errors in a session variable
+            $_SESSION["errors"] = $errors;
+
+            // we redirect to form
+            header('Location: /reservations-create.php');
+            exit();
+
         }
+
+
     } catch (PDOException $PDOException) {
-        die($PDOException->getMessage());
+        echo $PDOException->getMessage();
     } catch (Exception $exception) {
-        die($exception->getMessage());
+        echo $exception->getMessage();
     }
 } else
     die("cannot access with GET Method");

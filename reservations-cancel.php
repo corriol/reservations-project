@@ -21,7 +21,7 @@
 
 <body>
 <h1>Cancel reservation</h1>
-    <form class="table" action="reservation-cancel-confirm.php" method="post">
+    <form class="table" action="reservations-cancel-confirm.php" method="post">
         
             <label>Reservation number</label>
             <input type="text" name="id" value="" />

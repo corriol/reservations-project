@@ -13,7 +13,7 @@ if ($userAnswer === "yes") {
 
     /* TODO: VALIDAR */
 
-    $pdo = new PDO("mysql:host=localhost;dbname=reservations;charset=utf8", "user_db", "abcd");
+    $pdo = new PDO("mysql:host=mysql-server;dbname=reservations;charset=utf8", "user_db", "abcd");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $stmt = $pdo->prepare("DELETE FROM
@@ -54,6 +54,7 @@ if ($userAnswer === "yes") {
             <?php endforeach; ?>
         </ul>
     <?php endif ?>
+    <p><a href="index.php">Go home</a></p>
 
 </body>
 

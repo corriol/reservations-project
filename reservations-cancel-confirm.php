@@ -10,7 +10,7 @@ $name= filter_input(INPUT_POST, "name");
 
 /* TODO: VALIDAR */
 
-$pdo = new PDO("mysql:host=localhost;dbname=reservations;charset=utf8", "user_db", "abcd");
+$pdo = new PDO("mysql:host=mysql-server;dbname=reservations;charset=utf8", "user_db", "abcd");
 $pdo->setAttribute (PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 $stmt = $pdo->prepare("SELECT R.*, C.name as court,
@@ -54,7 +54,7 @@ if (empty($reservation)) {
     <li><?=$reservation["time"] ?></li>
 </ul>
 
-<form action="reservation-cancel-delete.php" method="post">
+<form action="reservations-cancel-delete.php" method="post">
     <input type="hidden" name="id" value="<?=$reservation["id"]?>" />
     <input type="submit" name="userAnswer" value="yes" />
     <input type="submit" name="userAnswer" value="no" />
