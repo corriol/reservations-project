@@ -5,17 +5,24 @@ Projecte d'exemple que il·lustra la gestió i validació de formularis, l'accé
 Es tracta un sistema simplificat de gestió de reserves de pistes esportives.
 
 ## Reserva de pistes
-Es tracta d’un formulari on l’usuari podrà reservar pistes i es guardaran en la base de dades.
+Implementat en `reservations-create.php` i `reservations-store.php`.
+
+Es tracta d’un formulari on l’usuari podrà reservar pistes i es guardaran en la base de dades.  
 
 ## Cancel·lació de reserves
+
+Implementada en `resevations-cancel.php`, `reservations-cancel-confirm.php` i `reservations-cancel-delete.php`
+
 L’usuari podrà cancel·lar una reserva introduint el número de reserva i el seu nom. Caldrà demanar confirmació.
 
-### Panell de control (reservations.php)
+### Panell de control
+
+Implementat en `reservations.php`
 
 En la part administrativa tindrem:
 * Un llistat de reserves ordenades de forma descendent per data de reserva. Les del dia actual tindran algun distinctiu (fons roig, icona, etc).
 * Un buscador per poder buscar reserves pel nom de l’usuari.
-* Una opció que ens permetrà cancel·lar reserves, demanant confirmació.
+* Una opció que ens permetrà cancel·lar reserves, demanant confirmació (`reservations-delete.php`). 
 
 Requisits de validació:
 * Tots els camps són obligatoris.
